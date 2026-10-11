@@ -41,9 +41,9 @@ disp('Roots of the denominator of Gz:')
 disp(rootsGz)
 %PID
 
-Kp = 0.55;    %proportional gain
+Kp = 0.1;    %proportional gain
 Ki = 0;     %Integral gain
-Kd = 0.05;    %Derivative Gain
+Kd = 0.09;    %Derivative Gain
 
 Cz = Kp + Ki*(Ts/2)*(z+1)/(z-1) + Kd*(z-1)/(Ts*z);
 OL = Cz*Gz*K_p ;
@@ -71,4 +71,8 @@ clf
 margin(OL)
 title('Phase Margin detection for PID control')
 
+
+%{
+Test Change From CHAZ
+%}
 
