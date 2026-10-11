@@ -7,3 +7,4 @@ N = 2;                  % Gear Ratio
 J_r = 0.001;            % Motor Rotor Moment of Inertia (kg / m^2)
 J_p = 1;                % Solar Panel Moment of Inertia (kg / m^2)
 J = J_r + J_p;          % Total Moment of Inertia (kg / m^2)
+
