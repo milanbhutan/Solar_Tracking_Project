@@ -2,7 +2,7 @@ R_m = 10;               % Motor Resistance (Ohm)
 K_a = 0.2;              % Motor Torque Constant (Nm / A)
 K_b  = 0.009549;        % Back EMF Constant (V / (rad / s))
 K_f = 0.047746;         % Rotational Friction Coefficient (Nm / (rad / s)) 
-N = 2;                  % Gear Ratio
+N = 20;                  % Gear Ratio
 
 La = 0;                 %Negligible motor inductance
 
@@ -10,8 +10,10 @@ J_r = 0.001;            % Motor Rotor Moment of Inertia (kg / m^2)
 J_p = 1;                % Solar Panel Moment of Inertia (kg / m^2)
 J = J_r + (J_p/N^2);          % Total Moment of Inertia (kg / m^2)
 
+h = 0.5;
+
 Ts = 0.01; %Seconds
-K_s = 1.273; %sensor Gain Converts rads to Amps
+K_s = h * 1.273; %sensor Gain Converts rads to Amps
 K_p = 4; %Power Amplifier gain
 %This assumes that at 90deg off from optimal that we get a 2A difference
 
@@ -49,12 +51,14 @@ disp('Roots of the denominator of Gz:')
 disp(rootsGz)
 
 %Lag Controller
+s_z = 100;
+s_p = 5;
 
-z_z = 0.04321;
-z_p = 0.7463;
-K = 0.0030203;
 
-Cz = K*((z-z_z)/(z-z_p));
+
+Cs = ((s - s_z) / (s - s_p));
+Cz = c2d(Cs, Ts, 'zoh');
+[numCz, denCz] = tfdata(Cz, 'v');
 OL = Cz*Gz*K_p ;
 
 
