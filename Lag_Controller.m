@@ -24,27 +24,35 @@ This gives us plenty of room to not threaten the clock
 s = tf('s');
 z = tf('z',Ts);
 %MOTOR CIRCUIT
-
 mot_circ = 1/(La*s + R_m);
+
 %MOTOR DYNAMICS
 mot_dyn = 1/(J*s+K_f);
+
 %Continuous Motor assembly
 Gspeed = feedback(mot_circ*K_a*mot_dyn,K_b); %back emf simplified
 Gpos = Gspeed*(1/N)*(1/s); 
+
+Loop_TF = Gpos * K_s * K_p;
+
+%For SISO Tool
+Loop_TF_z = c2d(Loop_TF, Ts, 'zoh'); 
+
 %digital Motor
 Gz = c2d(Gpos, Ts, 'zoh');    %digital plant for digital controller design
-%effectively does what the Ardunio does for us.
+                              %effectively does what the Ardunio does for us.
+
 fprintf('DIGITIZED MOTOR MODEL')
 [~, denGz] = tfdata(Gz,'v');
 rootsGz = roots(denGz);
 disp('Roots of the denominator of Gz:')
 disp(rootsGz)
 
-%PID
+%Lag Controller
 
-z_z = 0.7;
-z_p = 0.1;
-K = 0.74258;
+z_z = 0.04321;
+z_p = 0.7463;
+K = 0.0030203;
 
 Cz = K*((z-z_z)/(z-z_p));
 OL = Cz*Gz*K_p ;
@@ -60,7 +68,7 @@ disp(rootsPID_cltf)
 %PLOTING FOR PID PERFORMANCE/STABILITY
 t = 0:Ts:60; % 5 seconds of performance data
 
-figure (1)
+figure(1)
 clf
 step(PID_cltf,t)
 title('Step Response of PD')
@@ -73,3 +81,12 @@ figure(2)
 clf
 margin(OL)
 title('Phase Margin detection for PD control')
+
+f = -100 : 0.1: 100;
+pulse_time = 5;
+pulse_height = 0.2;
+
+fft_rect = pulse_height*pulse_time*(sin(pi*pulse_time.*f)./(pi*pulse_time.*f));
+
+figure(3);
+plot(f, fft_rect);
