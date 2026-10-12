@@ -41,9 +41,9 @@ disp('Roots of the denominator of Gz:')
 disp(rootsGz)
 %PID
 
-Kp = 0.1;    %proportional gain
+Kp = 1;    %proportional gain
 Ki = 0;     %Integral gain
-Kd = 0.09;    %Derivative Gain
+Kd = 15;    %Derivative Gain
 
 Cz = Kp + Ki*(Ts/2)*(z+1)/(z-1) + Kd*(z-1)/(Ts*z);
 OL = Cz*Gz*K_p ;
@@ -60,7 +60,7 @@ t = 0:Ts:60; % 5 seconds of performance data
 figure (1)
 clf
 step(PID_cltf,t)
-title('Step Response of PID')
+title('Step Response of PD')
 ylabel('Radians')
 grid on
 fprintf('PERFORMANCE DATA OF PID')
@@ -69,17 +69,4 @@ stepinfo(PID_cltf)
 figure(2)
 clf
 margin(OL)
-title('Phase Margin detection for PID control')
-
-
-%{
-Test Change From CHAZ
-%}
-
-%LEAD CONTroller git test
-%%%%%%%%%%%%
-%]
-%
-%
-%
-%
+title('Phase Margin detection for PD control')
