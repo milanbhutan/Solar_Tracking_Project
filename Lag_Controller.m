@@ -13,7 +13,7 @@ J = J_r + (J_p/N^2);          % Total Moment of Inertia (kg / m^2)
 h = 0.5;
 
 Ts = 0.01; %Seconds
-K_s = h * 1.273; %sensor Gain Converts rads to Amps
+K_s = 3.6 * h * (2/1.8); %sensor Gain Converts rads to Amps
 K_p = 4; %Power Amplifier gain
 %This assumes that at 90deg off from optimal that we get a 2A difference
 
@@ -33,7 +33,7 @@ mot_dyn = 1/(J*s+K_f);
 
 %Continuous Motor assembly
 Gspeed = feedback(mot_circ*K_a*mot_dyn,K_b); %back emf simplified
-Gpos = Gspeed*(1/N)*(1/s); 
+Gpos = Gspeed * (1/N) * (1/s) * K_p; 
 
 Loop_TF = Gpos * K_s * K_p;
 
@@ -51,15 +51,16 @@ disp('Roots of the denominator of Gz:')
 disp(rootsGz)
 
 %Lag Controller
-s_z = 0.01;
+K = 300;
 s_p = 0.0001;
-K = 20;
+s_z = 10 * s_p;
+
 
 
 Cs = K * ((s + s_z) / (s + s_p));
 Cz = c2d(Cs, Ts, 'zoh');
 [numCz, denCz] = tfdata(Cz, 'v');
-OL = Cz*Gz*K_p ;
+OL = Cz*Gz ;
 
 
 PID_cltf = feedback(OL,K_s);
