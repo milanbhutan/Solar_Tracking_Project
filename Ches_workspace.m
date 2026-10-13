@@ -7,7 +7,7 @@ N = 20;                  % Gear Ratio
 La = 0;                 %Negligable motor inductance
 
 J_r = 0.001;            % Motor Rotor Moment of Inertia (kg / m^2)
-J_p = 1;                % Solar Panel Moment of Inertia (kg / m^2)
+J_p = 15.44;                % Solar Panel Moment of Inertia (kg / m^2)
 J = J_r + (J_p/N^2);          % Total Moment of Inertia (kg / m^2)
 
 Ts = 0.01; %Seconds

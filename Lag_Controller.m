@@ -7,7 +7,7 @@ N = 20;                  % Gear Ratio
 La = 0;                 %Negligible motor inductance
 
 J_r = 0.001;            % Motor Rotor Moment of Inertia (kg / m^2)
-J_p = 1;                % Solar Panel Moment of Inertia (kg / m^2)
+J_p = 15.44;                % Solar Panel Moment of Inertia (kg / m^2)
 J = J_r + (J_p/N^2);          % Total Moment of Inertia (kg / m^2)
 
 h = 0.5;
@@ -42,7 +42,7 @@ Loop_TF_z = c2d(Loop_TF, Ts, 'zoh');
 
 %digital Motor
 Gz = c2d(Gpos, Ts, 'zoh');    %digital plant for digital controller design
-                              %effectively does what the Ardunio does for us.
+                              %effectively does what the Arduino does for us.
 
 fprintf('DIGITIZED MOTOR MODEL')
 [~, denGz] = tfdata(Gz,'v');
@@ -51,12 +51,12 @@ disp('Roots of the denominator of Gz:')
 disp(rootsGz)
 
 %Lag Controller
-s_z = 100;
-s_p = 5;
+s_z = 0.01;
+s_p = 0.0001;
+K = 20;
 
 
-
-Cs = ((s - s_z) / (s - s_p));
+Cs = K * ((s + s_z) / (s + s_p));
 Cz = c2d(Cs, Ts, 'zoh');
 [numCz, denCz] = tfdata(Cz, 'v');
 OL = Cz*Gz*K_p ;
