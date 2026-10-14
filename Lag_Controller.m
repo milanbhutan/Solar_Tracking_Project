@@ -13,7 +13,7 @@ J = J_r + (J_p/N^2);          % Total Moment of Inertia (kg / m^2)
 h = 0.5;
 
 Ts = 0.01; %Seconds
-K_s = 3.6 * h * (2/1.8); %sensor Gain Converts rads to Amps
+K_s = h * (2/1.8); %sensor Gain Converts rads to Amps
 K_p = 4; %Power Amplifier gain
 %This assumes that at 90deg off from optimal that we get a 2A difference
 
@@ -51,9 +51,9 @@ disp('Roots of the denominator of Gz:')
 disp(rootsGz)
 
 %Lag Controller
-K = 300;
+K = 100;
 s_p = 0.0001;
-s_z = 10 * s_p;
+s_z = 0.01;
 
 
 
