@@ -1,3 +1,5 @@
+clear all;
+
 R_m = 10;               % Motor Resistance (Ohm)
 K_a = 0.2;              % Motor Torque Constant (Nm / A)
 K_b  = 0.009549;        % Back EMF Constant (V / (rad / s))
@@ -58,11 +60,12 @@ s_z = 0.01;
 
 
 Cs = K * ((s + s_z) / (s + s_p));
-Cz = c2d(Cs, Ts, 'zoh');
-[numCz, denCz] = tfdata(Cz, 'v');
+numCz = K * (z - exp(-s_z*Ts));
+denCz = (z - exp(-s_p*Ts));
+Cz = numCz / denCz;
+[numCz , denCz] = tfdata(Cz, 'v');
+
 OL = Cz*Gz ;
-
-
 PID_cltf = feedback(OL,K_s);
 
 [~, denPID_cltf] = tfdata(PID_cltf,'v');
@@ -87,7 +90,7 @@ clf
 margin(OL)
 title('Phase Margin detection for PD control')
 
-f = -100 : 0.1: 100;
+f = -10 : 0.1: 10;
 pulse_time = 5;
 pulse_height = 0.2;
 
@@ -95,3 +98,5 @@ fft_rect = pulse_height*pulse_time*(sin(pi*pulse_time.*f)./(pi*pulse_time.*f));
 
 figure(3);
 plot(f, fft_rect);
+xlabel("Frequency", "FontSize",18);
+ylabel("Magnitude", "FontSize",18);
