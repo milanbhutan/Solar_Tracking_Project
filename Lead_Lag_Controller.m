@@ -12,11 +12,12 @@ J_r = 0.001;            % Motor Rotor Moment of Inertia (kg / m^2)
 J_p = 15.44;                % Solar Panel Moment of Inertia (kg / m^2)
 J = J_r + (J_p/N^2);          % Total Moment of Inertia (kg / m^2)
 
-h = 0.5;
+h = 0.25;
 
 Ts = 0.01; %Seconds
 K_s = h * (2/1.8); %sensor Gain Converts rads to Amps
 K_p = 4; %Power Amplifier gain
+K_p2 = 25;
 %This assumes that at 90deg off from optimal that we get a 2A difference
 
 %{
@@ -37,10 +38,7 @@ mot_dyn = 1/(J*s+K_f);
 Gspeed = feedback(mot_circ*K_a*mot_dyn,K_b); %back emf simplified
 Gpos = Gspeed * (1/N) * (1/s) * K_p; 
 
-Loop_TF = Gpos * K_s * K_p;
 
-%For SISO Tool
-Loop_TF_z = c2d(Loop_TF, Ts, 'zoh'); 
 
 %digital Motor
 Gz = c2d(Gpos, Ts, 'zoh');    %digital plant for digital controller design
@@ -53,20 +51,24 @@ disp('Roots of the denominator of Gz:')
 disp(rootsGz)
 
 %Lag Controller
-K = 100;
-s_p = 0.0001;
-s_z = 0.01;
+K = 500;
+s_p_lag = 0.0001;
+s_z_lag = 0.01;
+s_p_lead = 30;
+s_z_lead = 3;
 
 
+numCz_lag = (z - exp(-s_z_lag*Ts));
+denCz_lag = (z - exp(-s_p_lag*Ts));
 
-Cs = K * ((s + s_z) / (s + s_p));
-numCz = K * (z - exp(-s_z*Ts));
-denCz = (z - exp(-s_p*Ts));
-Cz = numCz / denCz;
+numCz_lead = (z - exp(-s_z_lead*Ts));
+denCz_lead = (z - exp(-s_p_lead*Ts));
+
+Cz = K * (numCz_lag / denCz_lag) * (numCz_lead / denCz_lead);
 [numCz , denCz] = tfdata(Cz, 'v');
 
 OL = Cz*Gz ;
-PID_cltf = feedback(OL,K_s);
+PID_cltf = feedback(OL, K_s * K_p2);
 
 [~, denPID_cltf] = tfdata(PID_cltf,'v');
 rootsPID_cltf = roots(denPID_cltf);
@@ -87,7 +89,7 @@ stepinfo(PID_cltf)
 
 figure(2)
 clf
-margin(OL)
+margin(OL * K_s * K_p2)
 title('Phase Margin detection for PD control')
 
 f = -10 : 0.1: 10;
