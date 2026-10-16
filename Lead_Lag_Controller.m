@@ -55,8 +55,9 @@ t = 0:Ts:60; % 5 seconds of performance data
 figure(1)
 clf
 step(PID_cltf,t)
-title('Step Response of PD')
-ylabel('Radians')
+title('Step Response of PD', 'FontSize', 18)
+xlabel('Time (s)', 'FontSize', 18)
+ylabel('Radians', 'FontSize', 18)
 grid on
 fprintf('PERFORMANCE DATA OF PID')
 stepinfo(PID_cltf)
