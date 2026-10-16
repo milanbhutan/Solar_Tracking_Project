@@ -1,3 +1,5 @@
 *.slxc
+*.autosave
 *.asv
 slprj/
+*.png

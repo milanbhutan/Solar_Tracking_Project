@@ -23,11 +23,6 @@ Gpos = Gspeed*(1/N_sym)*(1/s_sym) * K_p_sym;
 
 pretty(Gpos);
 
-%Lag Controller
-K = 100;
-s_p = 0.0001;
-s_z = 0.01;
-
 
 Gpos_nominal = subs(Gpos, ...
     [R_m_sym K_a_sym K_b_sym K_f_sym N_sym La_sym J_sym K_p_sym], ...
@@ -42,9 +37,9 @@ Gpos_tf_z = c2d(Gpos_tf_s, Ts);
 
 [numGpos_z, denGpos_z] = tfdata(Gpos_tf_z, 'v');
 
-disp(Gpos_tf_z);
-RMSE = rmse(out.theta_offset_plant1.Data, out.theta_offset_plant2.Data);
-fprintf("RMSE: %.10f \n", RMSE);
+% disp(Gpos_tf_z);
+% RMSE = rmse(out.theta_offset_plant1.Data, out.theta_offset_plant2.Data);
+% fprintf("RMSE: %.10f \n", RMSE);
 
 load('linsys1.mat');
 [num_dist, den_dist] = tfdata(linsys1, 'v');
